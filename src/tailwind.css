@@ -1,0 +1,16 @@
+/*
+ * Tailwind v4 en mode « utilitaires seuls » : pas de preflight (reset), pour ne pas
+ * casser le CSS existant du site. Les utilitaires ne sont pas dans un @layer afin
+ * de l'emporter sur les sélecteurs globaux (h1, p…) de styles.css.
+ */
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css" source(none);
+@source ".";
+
+@theme {
+  --animate-hero-float: hero-float 6s ease-in-out infinite;
+  @keyframes hero-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+}
