@@ -3,6 +3,7 @@ import { cartCount, cartReducer, cartTotal, loadCart, sanitizeCart } from "./car
 
 const storageWith = (value) => ({ getItem: () => value });
 
+
 describe("cartReducer", () => {
   it("ajoute puis incrémente une même variante", () => {
     let cart = cartReducer([], { type: "add", id: "ai-premium", variantIndex: 1 });
