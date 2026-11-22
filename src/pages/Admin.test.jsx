@@ -30,6 +30,16 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("page admin", () => {
+  it("l'œil affiche et masque le mot de passe", () => {
+    render(<MemoryRouter><Admin /></MemoryRouter>);
+    const input = screen.getByLabelText("Mot de passe");
+    expect(input).toHaveAttribute("type", "password");
+    fireEvent.click(screen.getByRole("button", { name: "Afficher le mot de passe" }));
+    expect(input).toHaveAttribute("type", "text");
+    fireEvent.click(screen.getByRole("button", { name: "Masquer le mot de passe" }));
+    expect(input).toHaveAttribute("type", "password");
+  });
+
   it("affiche une erreur et reste verrouillée avec un mauvais mot de passe", async () => {
     fetchOrders.mockRejectedValue(new Error("Mot de passe incorrect."));
     render(<MemoryRouter><Admin /></MemoryRouter>);

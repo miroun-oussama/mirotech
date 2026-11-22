@@ -104,6 +104,13 @@ h3 a:hover{color:var(--gold)}
 .admin-page{max-width:1100px;min-height:60vh}
 .admin-page h1{font-size:clamp(30px,4vw,44px);margin:0 0 20px}
 .admin-login{max-width:380px;margin:40px auto;display:grid;gap:14px}
+.password-field{display:block}
+.password-field label{display:block;font-size:12px;color:#c7cccc}
+.password-input{position:relative}
+.password-input input{padding-right:46px}
+.password-toggle{position:absolute;top:6px;right:0;display:grid;place-items:center;width:44px;height:calc(100% - 6px);padding:0;color:var(--muted);background:none;border:0;border-radius:4px;cursor:pointer}
+.password-toggle:hover{color:var(--gold)}
+.password-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
 .admin-login label,.admin-search{display:block;font-size:12px;color:#c7cccc}
 .admin-login input,.admin-filters input,.admin-filters select{width:100%;background:#111517;border:1px solid var(--line);color:#fff;padding:12px;font-size:13px;border-radius:4px;margin-top:6px}
 .admin-note{color:var(--muted);font-size:13px;margin:18px 0}

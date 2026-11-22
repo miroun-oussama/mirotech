@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, Loader2, LogOut, MessageCircle, RefreshCw, Search } from "lucide-react";
+import { Eye, EyeOff, ExternalLink, Loader2, LogOut, MessageCircle, RefreshCw, Search } from "lucide-react";
 import { money } from "../lib/format";
 import { fetchOrders, logoutOrders, ordersEnabled, toWhatsappNumber, updateOrderStatus } from "../lib/orders";
 import { usePageMeta } from "../lib/usePageMeta";
@@ -42,6 +42,7 @@ export default function Admin() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showPassword, setShowPassword] = useState(false);
 
   const load = useCallback(async (credentials) => {
     setLoading(true);
@@ -136,10 +137,22 @@ export default function Admin() {
         >
           <p className="eyebrow">ADMINISTRATION</p>
           <h1>Connexion</h1>
-          <label>
-            Mot de passe
-            <input name="password" type="password" autoComplete="current-password" required autoFocus disabled={loading} />
-          </label>
+          <div className="password-field">
+            <label htmlFor="admin-password">Mot de passe</label>
+            <div className="password-input">
+              <input id="admin-password" name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" required autoFocus disabled={loading} />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                aria-pressed={showPassword}
+                disabled={loading}
+              >
+                {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+              </button>
+            </div>
+          </div>
           <button className="button button-primary" type="submit" disabled={loading}>
             {loading ? (
               <>
