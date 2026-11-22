@@ -157,12 +157,27 @@ h3 a:hover{color:var(--gold)}
 .tracking-page h1{font-size:clamp(32px,6vw,54px);margin-bottom:12px}
 .tracking-intro{max-width:42ch;color:var(--muted);font-size:15px}
 .tracking-form{display:grid;gap:16px;margin:24px 0}
-.tracking-form label{display:grid;gap:6px;font-size:14px;font-weight:700}
+.tracking-field{display:grid;gap:6px}
+.tracking-form label{font-size:14px;font-weight:700}
 .tracking-form input{width:100%;min-height:48px;padding:10px 12px;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:6px;font-size:16px;font-weight:400}
 .tracking-form input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .tracking-form .button{gap:8px;font-size:14px}
 .tracking-form .button:disabled{cursor:wait;opacity:.75}
-.tracking-result{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.tracking-form input[aria-invalid="true"]{border-color:#ff9d8f}
+.tracking-result{display:grid;gap:18px;padding:18px;background:var(--bg);border:1px solid var(--line);border-radius:12px}
+.tracking-result-head{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.tracking-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0;padding:0;list-style:none}
+.tracking-steps li{position:relative;display:grid;justify-items:center;gap:8px;color:var(--muted);font-size:13px;text-align:center}
+.tracking-steps li+li::before{content:"";position:absolute;top:15px;right:50%;width:100%;height:2px;background:var(--line)}
+.tracking-steps li.done+li.done::before{background:var(--gold)}
+.tracking-dot{position:relative;z-index:1;display:grid;place-items:center;width:32px;height:32px;border:2px solid var(--line);border-radius:50%;background:var(--bg);font-size:13px;font-weight:700}
+.tracking-steps li.done{color:var(--text)}
+.tracking-steps li.done .tracking-dot{border-color:var(--gold);background:var(--gold);color:#151515}
+.tracking-steps li.current .tracking-dot{box-shadow:0 0 0 4px #c4f00026}
+.tracking-message,.tracking-cancelled{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+.tracking-cancelled{display:flex;gap:10px;align-items:flex-start;color:#ff9d8f}
+.tracking-cancelled svg{flex:none;margin-top:2px}
+.tracking-again{justify-self:start;gap:8px;font-size:13px}
 .tracking-result small,.tracking-result strong{display:block}
 .tracking-result small,.tracking-contact>span{color:var(--muted)}
 .tracking-contact{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:14px}
