@@ -35,6 +35,15 @@ async function callApi(url, payload, timeoutMs = 20000) {
 /** Envoie la commande. Seuls id/variante/quantité partent : le serveur recalcule les prix. */
 export function submitOrder(cart, customer, { url = ORDERS_API_URL, website = "", requestId = "" } = {}) {
   const items = cartLines(cart).map((l) => ({ id: l.id, variantIndex: l.variantIndex, qty: l.qty }));
+
+  const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
+    return match ? decodeURIComponent(match[1]) : "";
+  };
+
+  const fbp = getCookie("_fbp");
+  const fbc = getCookie("_fbc");
+
   return callApi(url, {
     action: "order",
     items,
@@ -43,8 +52,13 @@ export function submitOrder(cart, customer, { url = ORDERS_API_URL, website = ""
       phone: String(customer.phone ?? "").trim(),
       address: String(customer.address ?? "").trim(),
     },
+    meta: {
+      fbp,
+      fbc,
+      userAgent: navigator.userAgent,
+    },
     website,
-    requestId, // identifiant unique de la tentative : un renvoi (timeout, double clic) ne crée pas de doublon
+    requestId,
   });
 }
 
