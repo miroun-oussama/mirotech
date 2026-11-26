@@ -154,7 +154,11 @@ const trackInitiateCheckout = () => {
 
             <div className="buy-row">
               <QtyStepper value={qty} min={1} max={99} label={product.name} onChange={setQty} />
-              <button className="button button-primary product-buy" onClick={() => buyNow(product.id, variantIndex, qty)}>
+              <button className="button button-primary product-buy" onClick={() => {
+  buyNow(product.id, variantIndex, qty);
+  trackAddToCart();
+  trackInitiateCheckout();
+}}>
                 <ShoppingBag size={18} aria-hidden="true" /> Commander maintenant
               </button>
             </div>
