@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Banknote, ChevronDown, LifeBuoy, MessageCircle, Plus, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import ProductCard from "../components/ProductCard";
@@ -24,6 +24,24 @@ function ProductView({ product }) {
   const [qty, setQty] = useState(1);
   const variant = product.variants[variantIndex];
   const related = products.filter((item) => item.id !== product.id).slice(0, 3);
+  useEffect(() => {
+  if (typeof window.fbq !== "function") return;
+
+  window.fbq("track", "ViewContent", {
+    content_name: product.name,
+    content_ids: [product.id],
+    content_type: "product",
+    value: variant.price,
+    currency: "MAD",
+    contents: [
+      {
+        id: product.id,
+        quantity: 1,
+        item_price: variant.price,
+      },
+    ],
+  });
+}, [product.id, variantIndex]);
   usePageMeta({
     title: `${product.name} — MIROTECH`,
     description: product.description,
