@@ -24,6 +24,44 @@ function ProductView({ product }) {
   const [qty, setQty] = useState(1);
   const variant = product.variants[variantIndex];
   const related = products.filter((item) => item.id !== product.id).slice(0, 3);
+  const trackAddToCart = () => {
+  if (typeof window.fbq !== "function") return;
+
+  window.fbq("track", "AddToCart", {
+    content_name: product.name,
+    content_ids: [product.id],
+    content_type: "product",
+    value: variant.price * qty,
+    currency: "MAD",
+    contents: [
+      {
+        id: product.id,
+        quantity: qty,
+        item_price: variant.price,
+      },
+    ],
+  });
+};
+
+const trackInitiateCheckout = () => {
+  if (typeof window.fbq !== "function") return;
+
+  window.fbq("track", "InitiateCheckout", {
+    content_name: product.name,
+    content_ids: [product.id],
+    content_type: "product",
+    value: variant.price * qty,
+    currency: "MAD",
+    num_items: qty,
+    contents: [
+      {
+        id: product.id,
+        quantity: qty,
+        item_price: variant.price,
+      },
+    ],
+  });
+};
   useEffect(() => {
   if (typeof window.fbq !== "function") return;
 
@@ -120,7 +158,10 @@ function ProductView({ product }) {
                 <ShoppingBag size={18} aria-hidden="true" /> Commander maintenant
               </button>
             </div>
-            <button className="button button-outline product-add" onClick={() => addItem(product.id, variantIndex, qty)}>
+            <button className="button button-outline product-add" onClick={() => {
+  addItem(product.id, variantIndex, qty);
+  trackAddToCart();
+}}>
               Ajouter au panier <Plus size={18} aria-hidden="true" />
             </button>
 
