@@ -211,3 +211,5 @@ body.locked .floating-contact{display:none}
 .char-count{display:block;text-align:right;color:var(--muted);font-size:11px;margin-top:4px}
 .checkout-modal [aria-invalid="true"]{border-color:#ff9d8f!important}
 .checkout-modal input:disabled,.checkout-modal textarea:disabled{opacity:.6}
+/* iOS zoome sur la page quand on touche un champ de moins de 16px, et ne dézoome pas ensuite. */
+@media(max-width:650px),(pointer:coarse){.checkout-modal input,.checkout-modal textarea{font-size:16px}}
