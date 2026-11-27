@@ -2,7 +2,7 @@ import { cartLines } from "./cart";
 
 /** URL de l'application Web Google Apps Script (voir google-apps-script/INSTALLATION.md). */
 export const ORDERS_API_URL = import.meta.env.VITE_ORDERS_API_URL || "";
-export const ordersEnabled = (url = ORDERS_API_URL) => Boolean(url);
+export const ordersEnabled = (url = ORDERS_API_URL) => Boolean(url); 
 
 // « text/plain » évite la requête de pré-vérification CORS que Apps Script ne gère pas.
 async function callApi(url, payload, timeoutMs = 20000) {
