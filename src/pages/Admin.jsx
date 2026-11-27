@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Eye, EyeOff, ExternalLink, Loader2, LogOut, MessageCircle, RefreshCw, Search } from "lucide-react";
+import { Eye, EyeOff, ExternalLink, Loader2, LogOut, RefreshCw, Search } from "lucide-react";
 import { money } from "../lib/format";
 import { fetchOrders, logoutOrders, ordersEnabled, toWhatsappNumber, updateOrderStatus } from "../lib/orders";
 import { usePageMeta } from "../lib/usePageMeta";
+import WhatsAppIcon from "../components/WhatsAppIcon";
 
 // On ne garde que le jeton de session (30 min) délivré par Google, jamais le mot de passe.
 const STORAGE_KEY = "mirotech-admin-token";
@@ -295,7 +296,7 @@ export default function Admin() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <MessageCircle size={15} aria-hidden="true" /> Contacter
+                    <WhatsAppIcon size={15} /> Contacter
                   </a>
                 </div>
               </div>

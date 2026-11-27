@@ -33,7 +33,7 @@ async function callApi(url, payload, timeoutMs = 20000) {
 }
 
 /** Envoie la commande. Seuls id/variante/quantité partent : le serveur recalcule les prix. */
-export function submitOrder(cart, customer, { url = ORDERS_API_URL, website = "", requestId = "" } = {}) {
+export function submitOrder(cart, customer, { url = ORDERS_API_URL, website = "", requestId = "", delivery = "" } = {}) {
   const items = cartLines(cart).map((l) => ({ id: l.id, variantIndex: l.variantIndex, qty: l.qty }));
 
   const getCookie = (name) => {
@@ -57,6 +57,7 @@ export function submitOrder(cart, customer, { url = ORDERS_API_URL, website = ""
       fbc,
       userAgent: navigator.userAgent,
     },
+    delivery, // ville de livraison seulement : les frais sont calculés par le serveur
     website,
     requestId,
   });

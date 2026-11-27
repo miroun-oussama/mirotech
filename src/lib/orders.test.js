@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { products } from "../data/products";
+import { DELIVERY_FEES, FREE_DELIVERY_MIN, deliveryFee } from "./delivery";
 import { fetchOrders, submitOrder, toWhatsappNumber } from "./orders";
 
 const cart = [{ key: "ai-premium-1", id: "ai-premium", variantIndex: 1, qty: 2 }];
@@ -68,6 +69,20 @@ describe("Code.gs (Google Apps Script)", () => {
       products.map((p) => [p.id, { name: p.name, variants: p.variants.map((v) => ({ label: v.label, price: v.price })) }]),
     );
     expect(server).toEqual(expected);
+  });
+
+  it("les frais de livraison du serveur sont identiques à ceux du site", () => {
+    expect(src).toContain(`FREE_DELIVERY_MIN = ${FREE_DELIVERY_MIN};`);
+    for (const [zone, fee] of Object.entries(DELIVERY_FEES)) {
+      expect(src).toMatch(new RegExp(`${zone}: \\{ label: "[^"]+", fee: ${fee} \\}`));
+    }
+  });
+
+  it("livraison offerte seulement au-delà du seuil", () => {
+    expect(deliveryFee(300, "casablanca")).toBe(20);
+    expect(deliveryFee(300, "autre")).toBe(40);
+    expect(deliveryFee(301, "autre")).toBe(0);
+    expect(deliveryFee(219, "")).toBeNull();
   });
 
   it("limite les droits au seul classeur et bloque la connexion admin après 5 échecs (mot de passe court)", () => {

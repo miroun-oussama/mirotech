@@ -58,10 +58,17 @@ const CATALOGUE = {
 };
 // CATALOGUE-END
 
+// Livraison : mêmes montants que src/lib/delivery.js (un test automatique vérifie la synchronisation).
+const FREE_DELIVERY_MIN = 300; // offerte quand le sous-total dépasse ce montant
+const DELIVERY_ZONES = {
+  casablanca: { label: "Casablanca", fee: 20 },
+  autre: { label: "autre ville", fee: 40 },
+};
+
 /* ------------------------------ Points d'entrée ------------------------------ */
 
 // Change ce numéro à chaque modification : il permet de vérifier que la NOUVELLE version est bien en ligne.
-const VERSION = "2026-11-22-j";
+const VERSION = "2026-11-27-a";
 const ORDER_SHEET_STYLE = "mirotech-orders-style-v1";
 
 function doGet() {
@@ -121,6 +128,18 @@ function createOrder_(body) {
   }
   if (!lines.length) return { ok: false, error: "Votre panier est vide." };
   if (totalQty > MAX_TOTAL_QTY) return { ok: false, error: "Quantité totale trop élevée. Contactez-nous directement." };
+
+  // Frais ajoutés au total et notés dans « Articles » (pas de nouvelle colonne : le statut doit rester en dernier).
+  const zoneId = String(body.delivery || "");
+  if (total > FREE_DELIVERY_MIN) {
+    lines.push("Livraison gratuite");
+  } else if (Object.prototype.hasOwnProperty.call(DELIVERY_ZONES, zoneId)) {
+    const zone = DELIVERY_ZONES[zoneId];
+    total += zone.fee;
+    lines.push("Livraison " + zone.label + " — " + zone.fee + " DH");
+  } else {
+    lines.push("Livraison — à confirmer"); // ancienne page encore ouverte : on garde la commande
+  }
 
   const requestId = typeof body.requestId === "string" ? body.requestId.slice(0, 64) : "";
   const cache = CacheService.getScriptCache();

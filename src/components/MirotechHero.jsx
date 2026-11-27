@@ -11,6 +11,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { CATEGORIES } from "../data/products";
+import Reveal from "./Reveal";
 
 const CATEGORY_ICONS = {
   auto: CarFront,
@@ -93,13 +94,13 @@ export default function MirotechHero() {
             </div>
 
             {/* Avantages */}
-            <ul className="mt-9 grid max-w-[620px] grid-cols-1 gap-5 border-t border-white/10 pt-7 sm:grid-cols-3">
+            <ul className="mt-9 grid max-w-[620px] grid-cols-1 gap-5 border-t border-white/10 pt-7 max-sm:list-none max-sm:px-0 sm:grid-cols-3">
               {BENEFITS.map(({ icon: Icon, title, desc }) => (
                 <li key={title} className="flex items-start gap-3">
                   <Icon size={25} strokeWidth={1.7} className="shrink-0 text-[#c4f000]" aria-hidden="true" />
                   <div>
-                    <p className="text-sm font-semibold">{title}</p>
-                    <p className="mt-1 text-xs text-[#9ba6a6]">{desc}</p>
+                    <p className="text-sm font-semibold max-sm:m-0">{title}</p>
+                    <p className="mt-1 text-xs text-[#9ba6a6] max-sm:mb-0">{desc}</p>
                   </div>
                 </li>
               ))}
@@ -130,29 +131,46 @@ export default function MirotechHero() {
         <nav
           id="categories"
           aria-label="Catégories de produits"
-          className="relative z-20 mt-12 grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-[#151d1d]/85 backdrop-blur-xl lg:mt-6 lg:grid-cols-4"
+          className="relative z-20 mt-12 grid grid-cols-2 gap-3 lg:mt-6 lg:grid-cols-4 lg:gap-4"
         >
-          {CATEGORIES.map((c) => {
+          {CATEGORIES.map((c, i) => {
             const Icon = CATEGORY_ICONS[c.id];
             return (
-              <Link
-                key={c.id}
-                to={{ pathname: "/", search: `?categorie=${c.id}`, hash: "#catalogue" }}
-                className="group flex min-h-24 items-center justify-center gap-3 border-b border-r border-white/10 px-4 text-sm transition-colors hover:bg-lime-400/10 sm:text-base lg:border-b-0"
-              >
-                <Icon
-                  size={26}
-                  strokeWidth={1.6}
-                  aria-hidden="true"
-                  className="shrink-0 text-[#c4f000] transition-transform duration-300 group-hover:scale-110"
-                />
-                <span className="font-medium transition-colors group-hover:text-lime-300">{c.name}</span>
-                <ArrowUpRight
-                  size={15}
-                  aria-hidden="true"
-                  className="hidden text-lime-400 opacity-0 transition-opacity group-hover:opacity-100 xl:block"
-                />
-              </Link>
+              <Reveal key={c.id} delay={i * 0.12} y={36}>
+                <Link
+                  to={{ pathname: "/", search: `?categorie=${c.id}`, hash: "#catalogue" }}
+                  className="group relative isolate flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-[#151d1d] p-3 transition duration-300 hover:-translate-y-1 hover:border-lime-400/60 hover:shadow-[0_18px_40px_-18px_rgba(196,240,0,0.55)] active:scale-[0.97] sm:p-5"
+                >
+                  <img
+                    src={c.image}
+                    alt=""
+                    width="640"
+                    height="480"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {/* Voile sombre : le nom reste lisible sur les photos claires */}
+                  <span
+                    className="absolute inset-0 -z-10 bg-gradient-to-t from-black/95 via-black/50 to-transparent transition-opacity duration-300 group-hover:opacity-85"
+                    aria-hidden="true"
+                  />
+                  <span className="absolute left-2 top-2 grid size-8 place-items-center rounded-xl bg-black/70 backdrop-blur sm:left-4 sm:top-4 sm:size-11">
+                    <Icon size={20} strokeWidth={1.7} aria-hidden="true" className="text-[#c4f000]" />
+                  </span>
+                  <ArrowUpRight
+                    size={18}
+                    aria-hidden="true"
+                    className="absolute right-3 top-3 rounded-full bg-[#c4f000] p-1 text-black transition-transform duration-300 group-hover:rotate-45 sm:right-4 sm:top-4"
+                  />
+                  <span className="text-sm font-semibold leading-snug transition-colors group-hover:text-lime-300 sm:text-lg">
+                    {c.name}
+                  </span>
+                  <span className="mt-1 hidden text-[10px] tracking-[0.14em] text-white/70 sm:block" aria-hidden="true">
+                    {c.caption}
+                  </span>
+                </Link>
+              </Reveal>
             );
           })}
         </nav>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { FREE_DELIVERY_MESSAGE } from "../lib/delivery";
 
 const NAV = [
   ["/#catalogue", "Boutique"],
@@ -24,9 +25,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="announcement">
-        MIROTECH <span>—</span> La technologie, simplement.
-      </div>
+      <div className="announcement">{FREE_DELIVERY_MESSAGE}</div>
       <header className="site-header">
         <Link className="brand" to="/" aria-label="MIROTECH, accueil" onClick={() => setMenuOpen(false)}>
           <img src="/assets/mirotech-logo-transparent.png" alt="MIROTECH" className="brand-logo" />

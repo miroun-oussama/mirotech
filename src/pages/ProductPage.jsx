@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Banknote, ChevronDown, LifeBuoy, MessageCircle, Plus, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import { Banknote, ChevronDown, LifeBuoy, Plus, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import AnimatedPrice from "../components/AnimatedPrice";
 import ProductCard from "../components/ProductCard";
+import ProductDescription from "../components/ProductDescription";
 import ProductGallery from "../components/ProductGallery";
 import QtyStepper from "../components/QtyStepper";
 import NotFound from "./NotFound";
 import { useCart } from "../context/CartContext";
 import { categoryLabelFor, getProduct, products } from "../data/products";
 import { SITE, money } from "../lib/format";
+import { DELIVERY_TERMS, FREE_DELIVERY_MESSAGE } from "../lib/delivery";
 import { usePageMeta } from "../lib/usePageMeta";
 import { buildQuestionUrl } from "../lib/whatsapp";
+import WhatsAppIcon from "../components/WhatsAppIcon";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -119,7 +123,7 @@ const trackInitiateCheckout = () => {
             <p className="eyebrow">{product.label}</p>
             <h1>{product.name}</h1>
             <p className="product-kind">{categoryLabelFor(product)}</p>
-            <p className="product-lead">{product.description}</p>
+            {!product.details && <p className="product-lead">{product.description}</p>}
 
             {product.variants.length > 1 ? (
               <fieldset className="variant-picker">
@@ -144,7 +148,9 @@ const trackInitiateCheckout = () => {
             )}
 
             <div className="price-row" aria-live="polite">
-              <div className="modal-price">{money(variant.price * qty)}</div>
+              <div className="modal-price">
+                <AnimatedPrice value={variant.price * qty} />
+              </div>
               {qty > 1 && (
                 <span className="price-detail">
                   {qty} × {money(variant.price)}
@@ -177,9 +183,11 @@ const trackInitiateCheckout = () => {
                 <ShoppingBag size={18} aria-hidden="true" /> Commande confirmée par MIROTECH
               </li>
               <li>
-                <Truck size={18} aria-hidden="true" /> Frais et délais confirmés selon votre destination
+                <Truck size={18} aria-hidden="true" /> {FREE_DELIVERY_MESSAGE}
               </li>
             </ul>
+
+            {product.details && <ProductDescription blocks={product.details} />}
 
             <div className="compat-box">
               <strong>
@@ -187,7 +195,7 @@ const trackInitiateCheckout = () => {
               </strong>
               <p>{product.compat}</p>
               <a className="inline-link compat-ask" href={buildQuestionUrl(product)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle size={13} aria-hidden="true" /> Un doute ? Posez la question sur WhatsApp
+                <WhatsAppIcon size={13} /> Un doute ? Posez la question sur WhatsApp
               </a>
             </div>
 
@@ -196,7 +204,7 @@ const trackInitiateCheckout = () => {
                 <summary>
                   <Truck size={16} aria-hidden="true" /> Livraison <ChevronDown size={16} aria-hidden="true" className="chev" />
                 </summary>
-                <p>Les frais et délais sont à confirmer selon la destination avant validation de la commande.</p>
+                <p>{DELIVERY_TERMS} Les délais sont à confirmer avant validation de la commande.</p>
               </details>
               <details>
                 <summary>

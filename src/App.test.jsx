@@ -119,7 +119,7 @@ describe("panier et fiche produit (améliorations)", () => {
 
   it("les informations de livraison et de retours sont repliables", () => {
     renderAt("/produit/ai-premium");
-    expect(screen.getByText(/Les frais et délais sont à confirmer/)).toBeInTheDocument();
+    expect(screen.getByText(/20 DH à Casablanca et 40 DH/)).toBeInTheDocument();
     expect(screen.getByText(/Retours & assistance/)).toBeInTheDocument();
   });
 });

@@ -5,10 +5,10 @@ const COMPAT_AI_BOX =
   "Compatibilité annoncée pour les véhicules à partir de 2018. La présence d'un système CarPlay filaire d'origine et la compatibilité exacte du modèle doivent être vérifiées avant achat.";
 
 export const CATEGORIES = [
-  { id: "auto", value: "Car Accessories", label: "Auto", name: "Technologie automobile", caption: "AI BOX • CARPLAY", className: "category-car" },
-  { id: "recharge", value: "Charging & Power", label: "Recharge", name: "Recharge & énergie", caption: "SANS FIL • MULTI-APPAREILS", className: "category-power" },
-  { id: "telephone", value: "Phone Accessories", label: "Téléphone", name: "Accessoires connectés", caption: "PRATIQUE • COMPACT", className: "category-phone" },
-  { id: "gadgets", value: "Gadgets", label: "Gadgets", name: "Objets intelligents", caption: "SÉLECTION MIROTECH", className: "category-gadgets" },
+  { id: "auto", image: "/assets/categories/auto.webp", value: "Car Accessories", label: "Auto", name: "Technologie automobile", caption: "AI BOX • CARPLAY", className: "category-car" },
+  { id: "recharge", image: "/assets/categories/recharge.webp", value: "Charging & Power", label: "Recharge", name: "Recharge & énergie", caption: "SANS FIL • MULTI-APPAREILS", className: "category-power" },
+  { id: "telephone", image: "/assets/categories/telephone.webp", value: "Phone Accessories", label: "Téléphone", name: "Accessoires connectés", caption: "PRATIQUE • COMPACT", className: "category-phone" },
+  { id: "gadgets", image: "/assets/categories/gadgets.webp", value: "Gadgets", label: "Gadgets", name: "Objets intelligents", caption: "SÉLECTION MIROTECH", className: "category-gadgets" },
 ];
 
 export const products = [
@@ -69,11 +69,44 @@ export const products = [
     name: "Adaptateur sans fil CarPlay & Android Auto 2-en-1",
     categories: ["Car Accessories"],
     label: "CARPLAY • ANDROID AUTO",
-    description:
-      "Transforme une connexion filaire compatible en connexion sans fil pour Apple CarPlay ou Android Auto.",
+    // Résumé court : cartes produit et référencement. Le texte complet est dans « details ».
+    description: "Transformez votre CarPlay ou Android Auto filaire en connexion sans fil.",
+    details: [
+      {
+        lang: "fr",
+        title: "Adaptateur CarPlay & Android Auto sans fil",
+        text: "Transformez votre CarPlay ou Android Auto filaire en connexion sans fil. Branchez simplement l'adaptateur sur le port USB de votre voiture et profitez de vos applications préférées sans câble : GPS, musique, appels et bien plus encore.",
+        points: [
+          ["📱", "Connexion sans fil"],
+          ["🔄", "Connexion automatique"],
+          ["🔌", "Installation Plug & Play"],
+          ["🚗", "Plus de confort au quotidien"],
+        ],
+        note: "Compatible uniquement avec les véhicules équipés d'origine de CarPlay ou Android Auto filaire.",
+      },
+      {
+        lang: "ar",
+        title: "🇲🇦 محول CarPlay و Android Auto لاسلكي",
+        text: "حوّل CarPlay أو Android Auto ديال سيارتك من الاتصال بالكابل إلى الاتصال اللاسلكي. غير ربط المحول بمنفذ USB ديال السيارة واستمتع بالتطبيقات المفضلة عندك بلا كابل: GPS، الموسيقى، المكالمات والمزيد.",
+        points: [
+          ["📱", "اتصال لاسلكي"],
+          ["🔄", "اتصال تلقائي"],
+          ["🔌", "تركيب سهل Plug & Play"],
+          ["🚗", "راحة أكثر فالسياقة"],
+        ],
+        note: "متوافق فقط مع السيارات اللي فيها CarPlay أو Android Auto بالكابل من الأصل.",
+      },
+    ],
     image: "/assets/adaptateur-carplay-01.jpg",
     fit: "contain", // visuel type affiche : ne pas rogner le titre
-    gallery: ["/assets/adaptateur-carplay-01.jpg", "/assets/adaptateur-carplay-02.jpg"],
+    gallery: [
+      "/assets/adaptateur-carplay-01.jpg",
+      "/assets/adaptateur-carplay-03.jpg",
+      "/assets/adaptateur-carplay-04.jpg",
+      "/assets/adaptateur-carplay-05.jpg",
+      "/assets/adaptateur-carplay-02.jpg",
+      "/assets/adaptateur-carplay-06.jpg",
+    ],
     variants: [{ label: "Adaptateur 2-en-1", price: 219 }],
     compat:
       "Nécessite un véhicule disposant déjà de CarPlay filaire ou Android Auto filaire d'origine. Ne remplace pas un système absent.",

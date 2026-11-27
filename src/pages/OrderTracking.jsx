@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowLeft, ArrowUpRight, Check, Loader2, MessageCircle, PackageCheck, RotateCcw, Search, XCircle } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, Loader2, PackageCheck, RotateCcw, Search, XCircle } from "lucide-react";
 import { SITE } from "../lib/format";
 import { trackOrder } from "../lib/orders";
 import { usePageMeta } from "../lib/usePageMeta";
 import { LIMITS, normalizeMoroccanPhone, sanitizePhone } from "../lib/validation";
+import WhatsAppIcon from "../components/WhatsAppIcon";
 
 const ORDER_ID_RE = /^MT-\d{6}-\d{4}$/;
 
@@ -166,7 +167,7 @@ export default function OrderTracking() {
         <div className="tracking-contact">
           <span>Besoin d’aide ?</span>
           <a href={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(helpText)}`} target="_blank" rel="noopener noreferrer">
-            <MessageCircle size={16} aria-hidden="true" /> Écrire sur WhatsApp <ArrowUpRight size={14} aria-hidden="true" />
+            <WhatsAppIcon size={16} /> Écrire sur WhatsApp <ArrowUpRight size={14} aria-hidden="true" />
           </a>
         </div>
       </div>

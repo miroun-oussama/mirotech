@@ -3,7 +3,6 @@ import {
   ArrowUpRight,
   ChevronDown,
   ClipboardList,
-  MessageCircle,
   Minimize2,
   MousePointerClick,
   PackageCheck,
@@ -12,11 +11,13 @@ import {
   Zap,
 } from "lucide-react";
 import InstagramIcon from "../components/InstagramIcon";
+import WhatsAppIcon from "../components/WhatsAppIcon";
 import MirotechHero from "../components/MirotechHero";
 import ProductCard from "../components/ProductCard";
 import Reveal from "../components/Reveal";
 import { CATEGORIES, products } from "../data/products";
 import { SITE } from "../lib/format";
+import { DELIVERY_TERMS } from "../lib/delivery";
 import { usePageMeta } from "../lib/usePageMeta";
 
 const DESCRIPTION =
@@ -43,7 +44,7 @@ const FAQ = [
     "Ouvrez la fiche du produit, choisissez la version et la quantité, puis cliquez sur « Commander maintenant ». Renseignez vos coordonnées : votre commande est envoyée à MIROTECH, qui vous contacte pour la confirmer.",
   ],
   ["Comment se passe le paiement ?", "Réglez votre commande à la réception (paiement à la livraison / COD)."],
-  ["Quels sont les frais et délais de livraison ?", "Les frais et délais sont à confirmer selon la destination avant validation de la commande."],
+  ["Quels sont les frais et délais de livraison ?", `${DELIVERY_TERMS} Les délais sont à confirmer avant validation de la commande.`],
   [
     "Mon véhicule est-il compatible ?",
     "Pour les AI Box Android, la compatibilité est annoncée pour les véhicules à partir de 2018 ; la présence d'un système CarPlay filaire d'origine et la compatibilité exacte du modèle doivent être vérifiées avant achat. L'adaptateur sans fil 2-en-1 nécessite un véhicule disposant déjà de CarPlay ou d'Android Auto filaire d'origine : il ne remplace pas un système absent. En cas de doute, posez la question à MIROTECH avant de commander.",
@@ -222,7 +223,7 @@ export default function Home() {
           </p>
           <div className="contact-actions">
             <a className="button button-primary" href={`https://wa.me/${SITE.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
-              <MessageCircle size={16} aria-hidden="true" /> Écrire sur WhatsApp
+              <WhatsAppIcon size={16} /> Écrire sur WhatsApp
             </a>
             <a className="button button-outline" href={SITE.instagramUrl} target="_blank" rel="noopener noreferrer">
               <InstagramIcon size={16} /> Instagram

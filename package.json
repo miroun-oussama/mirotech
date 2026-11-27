@@ -10,8 +10,13 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.11.0",
+    "@gsap/react": "^2.1.2",
+    "@number-flow/react": "^0.6.2",
     "@tailwindcss/vite": "^4.3.5",
+    "canvas-confetti": "^1.9.4",
     "embla-carousel-react": "^8.6.0",
+    "gsap": "^3.15.1",
     "lucide-react": "^1.77.0",
     "motion": "^14.14.0",
     "react": "^19.3.1",

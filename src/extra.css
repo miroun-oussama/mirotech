@@ -87,6 +87,7 @@ h3 a:hover{color:var(--gold)}
 .checkout-summary li{display:flex;justify-content:space-between;gap:12px;font-size:12px;line-height:1.4}
 .checkout-summary small{display:block;color:var(--muted);font-size:11px}
 .checkout-summary b{white-space:nowrap}
+.checkout-summary .checkout-subtotal{border-top:1px solid var(--line);padding-top:8px}
 .checkout-summary .checkout-total{border-top:1px solid var(--line);padding-top:8px;font-size:14px}
 .hp-field{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
 .checkout-done{text-align:center;padding:16px 0 8px}
@@ -191,7 +192,7 @@ h3 a:hover{color:var(--gold)}
 .tracking-contact a:hover{text-decoration:underline}
 .floating-contact{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));z-index:25;display:grid;gap:8px}
 .floating-contact a{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;color:#fff;box-shadow:0 4px 16px #0006}
-.floating-contact-whatsapp{background:#087c48}
+.floating-contact-whatsapp{background:#25d366}
 .floating-contact-instagram{background:linear-gradient(135deg,#7d2db4,#bd2a54 65%,#ba4e2b)}
 .floating-contact a:hover{filter:brightness(1.17)}
 .floating-contact a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
@@ -211,5 +212,34 @@ body.locked .floating-contact{display:none}
 .char-count{display:block;text-align:right;color:var(--muted);font-size:11px;margin-top:4px}
 .checkout-modal [aria-invalid="true"]{border-color:#ff9d8f!important}
 .checkout-modal input:disabled,.checkout-modal textarea:disabled{opacity:.6}
+/* Livraison gratuite : bandeau du haut (peut passer sur deux lignes) et rappel dans la commande */
+.announcement{height:auto;min-height:30px;padding:6px 12px;text-align:center;line-height:1.5}
+@media(max-width:650px){.announcement{letter-spacing:.04em}}
+.free-delivery{display:flex;align-items:center;gap:10px;margin:14px 0 0;padding:10px 12px;border:1px solid rgba(196,240,0,.35);border-radius:6px;background:rgba(196,240,0,.1);color:var(--gold);font-size:13px;font-weight:600;line-height:1.5}
+.free-delivery svg{flex:none}
+/* Animations : reflet sur le bandeau et halo sur « Commander maintenant » */
+.announcement{position:relative;overflow:hidden}
+.announcement::after{content:"";position:absolute;inset:0 auto 0 0;width:30%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.8),transparent);transform:translateX(-120%);animation:banner-shine 3.5s ease-in-out infinite}
+@keyframes banner-shine{55%,100%{transform:translateX(450%)}}
+.button.product-buy{animation:buy-pulse 2.2s ease-out infinite}
+@keyframes buy-pulse{0%{box-shadow:0 10px 28px -12px rgba(196,240,0,.55),0 0 0 0 rgba(196,240,0,.6)}70%,100%{box-shadow:0 10px 28px -12px rgba(196,240,0,.55),0 0 0 12px rgba(196,240,0,0)}}
+@media(prefers-reduced-motion:reduce){.announcement::after{display:none}.button.product-buy{animation:none}}
+/* Description détaillée d'un produit (français puis arabe) */
+.product-description{margin-top:24px;display:grid;gap:22px}
+.product-description section+section{border-top:1px solid var(--line);padding-top:22px}
+.product-description h2{font:700 18px/1.4 Manrope,sans-serif;letter-spacing:0;margin:0 0 10px}
+.product-description p{font-size:14px;line-height:1.8;color:#c0c5c5;margin:0}
+.product-description ul{list-style:none;margin:14px 0;padding:0;display:grid;gap:8px;font-size:14px}
+.product-description li{display:flex;gap:10px}
+.product-description .product-description-note{font-weight:700;color:var(--text)}
+.product-description [dir="rtl"] p,.product-description [dir="rtl"] ul{font-size:15px}
+/* Choix de la ville de livraison */
+.delivery-zone{border:0;margin:15px 0 0;padding:0;display:grid;gap:8px;min-width:0}
+.delivery-zone legend{font-size:10px;color:#c7cccc;padding:0;margin-bottom:7px}
+.checkout-modal .delivery-zone label{display:flex;align-items:center;gap:10px;margin:0;min-height:46px;padding:10px 13px;border:1px solid var(--line);border-radius:4px;background:#111517;font-size:13px;cursor:pointer}
+.checkout-modal .delivery-zone label:has(input:checked){border-color:var(--gold)}
+.checkout-modal .delivery-zone input{width:18px;height:18px;flex:none;margin:0;padding:0;accent-color:var(--gold)}
+.checkout-modal .delivery-zone input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.delivery-zone b{margin-left:auto;white-space:nowrap}
 /* iOS zoome sur la page quand on touche un champ de moins de 16px, et ne dézoome pas ensuite. */
 @media(max-width:650px),(pointer:coarse){.checkout-modal input,.checkout-modal textarea{font-size:16px}}

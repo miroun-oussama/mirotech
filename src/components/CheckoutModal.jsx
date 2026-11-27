@@ -1,9 +1,12 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Loader2, ShoppingBag, X } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { CheckCircle2, Loader2, ShoppingBag, Truck, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useDialog } from "../lib/useDialog";
 import { money } from "../lib/format";
+import { celebrate } from "../lib/celebrate";
+import { DELIVERY_FEES, FREE_DELIVERY_MESSAGE, deliveryFee, isFreeDelivery } from "../lib/delivery";
 import { ORDERS_API_URL, newRequestId, ordersEnabled, submitOrder } from "../lib/orders";
 import {
   LIMITS,
@@ -16,11 +19,16 @@ import {
 
 const EMPTY = { name: "", phone: "", address: "" };
 const SANITIZERS = { name: sanitizeName, phone: sanitizePhone, address: limitAddress };
-const FIELD_ORDER = ["name", "phone", "address"];
+const FIELD_ORDER = ["name", "phone", "delivery", "address"];
+const ZONES = [
+  ["casablanca", "Casablanca"],
+  ["autre", "Autre ville"],
+];
 
 export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
   const { cart, lines, count, total, checkoutOpen, closeCheckout, clear } = useCart();
   const ref = useRef(null);
+  const reduceMotion = useReducedMotion();
   const requestIdRef = useRef(newRequestId()); // reste identique tant que la commande n'a pas abouti
   const [status, setStatus] = useState("idle"); // idle | sending | done
   const [error, setError] = useState("");
@@ -29,6 +37,7 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
   const [honeypot, setHoneypot] = useState("");
   // Les saisies restent en mémoire tant que la page est ouverte, même si la fenêtre est fermée.
   const [values, setValues] = useState(EMPTY);
+  const [zone, setZone] = useState(""); // ville de livraison : "" | casablanca | autre
 
   const bind = (field) => ({
     id: `co-${field}`,
@@ -66,6 +75,8 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
   if (!checkoutOpen) return null;
 
   const viaApi = ordersEnabled(apiUrl);
+  const free = isFreeDelivery(total);
+  const fee = deliveryFee(total, zone);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -74,6 +85,7 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
     if (count === 0) return setError("Votre panier est vide.");
 
     const errors = validateOrderForm(values);
+    if (!free && !zone) errors.delivery = "Choisissez votre ville de livraison.";
     setFieldErrors(errors);
     const firstInvalid = FIELD_ORDER.find((f) => errors[f]);
     if (firstInvalid) {
@@ -87,12 +99,19 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
     setStatus("sending");
     try {
       const customer = { ...values, phone: normalizeMoroccanPhone(values.phone) };
-      const res = await submitOrder(cart, customer, { url: apiUrl, website: honeypot, requestId: requestIdRef.current });
+      const res = await submitOrder(cart, customer, {
+        url: apiUrl,
+        website: honeypot,
+        requestId: requestIdRef.current,
+        delivery: zone,
+      });
       requestIdRef.current = newRequestId();
       setOrderId(res.orderId || "");
       setValues(EMPTY);
+      setZone("");
       clear();
       setStatus("done");
+      celebrate();
     } catch (err) {
       setStatus("idle");
       setError(`${err.message} Votre commande n'a pas été envoyée : vérifiez votre connexion puis réessayez.`);
@@ -101,7 +120,18 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
 
   return (
     <div className="modal-backdrop show" onClick={(e) => e.target === e.currentTarget && close()}>
-      <div className="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" ref={ref} tabIndex={-1}>
+      {/* Entrée seulement : à la fermeture la fenêtre disparaît tout de suite (focus et scroll rendus). */}
+      <motion.div
+        className="checkout-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="checkoutTitle"
+        ref={ref}
+        tabIndex={-1}
+        initial={reduceMotion ? false : { opacity: 0, y: 80 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      >
         <button className="icon-button modal-close" onClick={close} aria-label="Fermer">
           <X size={18} aria-hidden="true" />
         </button>
@@ -116,8 +146,8 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
               </p>
             )}
             <p className="checkout-note">
-              Merci ! MIROTECH vous contactera très bientôt pour confirmer la disponibilité, la livraison et les frais. Le
-              paiement se fait à la livraison.
+              Merci ! MIROTECH vous contactera très bientôt pour confirmer la disponibilité et la livraison. Le paiement
+              se fait à la livraison.
             </p>
             {orderId && (
               <Link className="button button-outline" to="/suivi-commande" state={{ orderId }} onClick={close}>
@@ -137,6 +167,10 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
               paiement se fait à la livraison.
             </p>
 
+            <p className="free-delivery">
+              <Truck size={16} aria-hidden="true" /> {FREE_DELIVERY_MESSAGE}
+            </p>
+
             {lines.length > 0 && (
               <ul className="checkout-summary" aria-label="Récapitulatif de la commande">
                 {lines.map((l) => (
@@ -147,10 +181,20 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
                     <b>{money(l.lineTotal)}</b>
                   </li>
                 ))}
-                <li className="checkout-total">
+                <li className="checkout-subtotal">
                   <span>Sous-total</span>
                   <b>{money(total)}</b>
                 </li>
+                <li>
+                  <span>Livraison</span>
+                  <b>{free ? "Gratuite" : fee === null ? "Choisissez la ville" : money(fee)}</b>
+                </li>
+                {fee !== null && (
+                  <li className="checkout-total">
+                    <span>Total à payer</span>
+                    <b>{money(total + fee)}</b>
+                  </li>
+                )}
               </ul>
             )}
 
@@ -162,6 +206,32 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
               <label htmlFor="co-phone">Téléphone</label>
               <input {...bind("phone")} type="tel" required inputMode="tel" autoComplete="tel" placeholder="06 12 34 56 78" />
               {fieldError("phone")}
+
+              {!free && lines.length > 0 && (
+                <fieldset className="delivery-zone" aria-describedby={fieldErrors.delivery ? "co-delivery-err" : undefined}>
+                  <legend>Ville de livraison</legend>
+                  {ZONES.map(([value, label], i) => (
+                    <label key={value}>
+                      <input
+                        type="radio"
+                        id={i === 0 ? "co-delivery" : undefined}
+                        name="delivery"
+                        value={value}
+                        checked={zone === value}
+                        disabled={status === "sending"}
+                        aria-invalid={fieldErrors.delivery ? "true" : undefined}
+                        onChange={() => {
+                          setZone(value);
+                          setFieldErrors((f) => ({ ...f, delivery: undefined }));
+                        }}
+                      />
+                      <span>{label}</span>
+                      <b>{money(DELIVERY_FEES[value])}</b>
+                    </label>
+                  ))}
+                </fieldset>
+              )}
+              {!free && fieldError("delivery")}
 
               <label htmlFor="co-address">Ville et adresse</label>
               <textarea {...bind("address")} required autoComplete="street-address" placeholder="Ville, quartier, rue, n° d'immeuble, repère" />
@@ -198,7 +268,7 @@ export default function CheckoutModal({ apiUrl = ORDERS_API_URL }) {
             </form>
           </>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

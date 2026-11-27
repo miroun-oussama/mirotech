@@ -1,16 +1,19 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ArrowRight, Banknote, ShoppingBag, Trash2, Truck, X } from "lucide-react";
 import QtyStepper from "./QtyStepper";
 import { useCart } from "../context/CartContext";
 import { minPrice, products } from "../data/products";
 import { useDialog } from "../lib/useDialog";
+import { DELIVERY_FEES, DELIVERY_RATES, FREE_DELIVERY_MESSAGE, isFreeDelivery } from "../lib/delivery";
 import { money } from "../lib/format";
 
 export default function CartDrawer() {
   const { lines, count, total, cartOpen, closeCart, openCheckout, setQty, removeItem } = useCart();
   const ref = useRef(null);
   useDialog(cartOpen, closeCart, ref);
+  const [linesRef] = useAutoAnimate(); // ajout et retrait fluides des articles
   const empty = lines.length === 0;
 
   return (
@@ -62,7 +65,7 @@ export default function CartDrawer() {
           </div>
         ) : (
           <>
-            <ul className="cart-lines">
+            <ul className="cart-lines" ref={linesRef}>
               {lines.map((l) => {
                 const to = `/produit/${l.product.id}`;
                 return (
@@ -99,7 +102,13 @@ export default function CartDrawer() {
                 </div>
                 <div>
                   <dt>Livraison</dt>
-                  <dd className="muted">À confirmer</dd>
+                  {isFreeDelivery(total) ? (
+                    <dd>Gratuite</dd>
+                  ) : (
+                    <dd className="muted">
+                      {DELIVERY_FEES.casablanca} ou {DELIVERY_FEES.autre} DH
+                    </dd>
+                  )}
                 </div>
               </dl>
               <ul className="cart-assure">
@@ -107,7 +116,8 @@ export default function CartDrawer() {
                   <Banknote size={15} aria-hidden="true" /> Paiement à la livraison
                 </li>
                 <li>
-                  <Truck size={15} aria-hidden="true" /> Frais confirmés selon votre destination
+                  <Truck size={15} aria-hidden="true" />{" "}
+                  {isFreeDelivery(total) ? "Livraison gratuite pour cette commande" : `${DELIVERY_RATES}. ${FREE_DELIVERY_MESSAGE}.`}
                 </li>
               </ul>
               <button className="button button-primary checkout-open" onClick={openCheckout}>

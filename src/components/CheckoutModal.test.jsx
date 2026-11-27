@@ -32,6 +32,7 @@ const fill = (overrides = {}) => {
   type("Nom ou prénom", v.name);
   type("Téléphone", v.phone);
   type("Ville et adresse", v.address);
+  if (v.zone !== "") fireEvent.click(screen.getByRole("radio", { name: /^Casablanca/ }));
 };
 const submit = () => fireEvent.click(screen.getByRole("button", { name: "Commander" }));
 
@@ -46,6 +47,16 @@ describe("formulaire Commander", () => {
     setup();
     expect(screen.getByRole("dialog", { name: /Préparer votre commande/ })).toBeInTheDocument();
     expect(screen.getByRole("list", { name: /Récapitulatif/ })).toHaveTextContent("219 DH");
+  });
+
+  it("sous 300 DH : ajoute 20 DH à Casablanca et 40 DH ailleurs", () => {
+    setup();
+    const summary = screen.getByRole("list", { name: /Récapitulatif/ });
+    expect(summary).not.toHaveTextContent("Total à payer");
+    fireEvent.click(screen.getByRole("radio", { name: /^Casablanca/ }));
+    expect(summary).toHaveTextContent("239 DH");
+    fireEvent.click(screen.getByRole("radio", { name: /^Autre ville/ }));
+    expect(summary).toHaveTextContent("259 DH");
   });
 
   it("limite la saisie : caractères interdits retirés et longueurs plafonnées", () => {
@@ -65,12 +76,13 @@ describe("formulaire Commander", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
     setup();
-    fill({ name: "", phone: "123", address: "" });
+    fill({ name: "", phone: "123", address: "", zone: "" });
     submit();
     const alerts = screen.getAllByRole("alert").map((a) => a.textContent).join(" ");
     expect(alerts).toMatch(/nom ou votre prénom/i);
     expect(alerts).toMatch(/Numéro marocain invalide/);
     expect(alerts).toMatch(/ville et votre adresse/i);
+    expect(alerts).toMatch(/ville de livraison/i);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -87,6 +99,7 @@ describe("formulaire Commander", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.customer).toEqual({ name: "Sara Alaoui", phone: "0612345678", address: "Casablanca, Maarif, rue 3, immeuble 12" });
+    expect(body.delivery).toBe("casablanca");
     expect(openMock).not.toHaveBeenCalled();
     expect(document.body.innerHTML).not.toContain("wa.me");
     expect(screen.getByTestId("count")).toHaveTextContent("0");

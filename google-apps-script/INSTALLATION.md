@@ -45,6 +45,9 @@ Faites **Déployer → Gérer les déploiements → Modifier → Nouvelle versio
 ## Quand vous changez un prix
 Modifiez `src/data/products.js` **et** le bloc `CATALOGUE` de `Code.gs`, puis redéployez le script. `npm test` échoue si les deux ne sont pas identiques.
 
+## Quand vous changez les frais de livraison
+Modifiez `src/lib/delivery.js` **et** `FREE_DELIVERY_MIN` / `DELIVERY_ZONES` dans `Code.gs`, puis redéployez le script (`npm test` vérifie qu'ils sont identiques).
+
 ## Sécurité : à savoir
 - L'adresse `/exec` est publique (elle est dans le site). Elle ne permet que d'envoyer une commande ; lire les commandes exige le mot de passe.
 - Ne donnez pas l'accès « éditeur » du Google Sheet à vos employés : un éditeur peut voir le script et le mot de passe. Pour eux, partagez le Sheet en lecture seule ou donnez-leur la page `/miro`.
